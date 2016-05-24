@@ -15,9 +15,9 @@ $(document).ready( function() {
         var $value = $inp.val();
         $('.list').append('<div class="row">' +
             '<div class="col-xs-3">'+ $value + '</div>' +
-            '<div class="status bg-warning col-xs-3">Незаконченное</div>' +
-            '<div class="col-xs-3 act done"><a>Завершить</a></div>' +
-            '<div class="col-xs-3 act delete"><a>Удалить</a></div>' +
+            '<div class="status bg-warning col-xs-3">Unfinished</div>' +
+            '<div class="col-xs-3 act done"><a>Finish</a></div>' +
+            '<div class="col-xs-3 act delete"><a>Delete</a></div>' +
             '</div>');
         $inp.val('');
         $info[0]++;
@@ -30,10 +30,10 @@ $(document).ready( function() {
 
     function toggleTextButton () {
         if ($flagButton) {
-            $('.btn-primary').text('Закрыть форму');
+            $('.btn-primary').text('Close form');
             $flagButton = false;
         } else {
-            $('.btn-primary').text('Добавить дело');
+            $('.btn-primary').text('Create new task');
             $flagButton = true;
         }
     }
@@ -46,14 +46,14 @@ $(document).ready( function() {
 
     $('.list').on('click', '.done a', function() {
         if ($(this).parents('.row').find('.status').hasClass('bg-warning')) {
-            $(this).text('Снова начать');
-            $(this).parents('.row').find('.status').text('Завершено').removeClass('bg-warning').addClass('bg-success');
+            $(this).text('Start again');
+            $(this).parents('.row').find('.status').text('Finished').removeClass('bg-warning').addClass('bg-success');
             $info[0]--;
             $info[1]++;
             updateInfo();
         } else {
-            $(this).text('Завершить');
-            $(this).parents('.row').find('.status').text('Незаконченное').removeClass('bg-success').addClass('bg-warning');
+            $(this).text('Finish');
+            $(this).parents('.row').find('.status').text('Unfinished').removeClass('bg-success').addClass('bg-warning');
             $info[0]++;
             $info[1]--;
             updateInfo();
