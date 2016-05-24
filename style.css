@@ -1,0 +1,25 @@
+.container-fluid {
+    margin: 1em auto;
+}
+
+form {
+    margin: 1em 0;
+    display: none;
+}
+.btn-success,
+.row {
+    margin: 1em 0;
+}
+.act {
+    display: none;
+    padding-left: 2em;
+    cursor: pointer;
+}
+.bg-warning,
+.bg-success {
+    font-size: 0.8em;
+    line-height: 2em;
+}
+a {
+    cursor: pointer;
+}
