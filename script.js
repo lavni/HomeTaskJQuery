@@ -4,7 +4,9 @@ $(document).ready( function() {
 
     var $flagButton = true;
     var $inp = $('input');
-    var $info = [0, 0, 0]; //incomplete, complete, deleted
+    var $listKey = 'LIST';
+    var $statusKey = 'INFO';
+    var $info = getFromLocalStorage($statusKey) || [0, 0, 0]; //incomplete, complete, deleted
 
 //listeners
 
@@ -72,7 +74,7 @@ $(document).ready( function() {
         updateLocalStorage(null, $id, 'delete');
     });
 
-    localStorage.clear();
+    makeList();
     updateInfo();
 
 //functions
@@ -93,41 +95,46 @@ $(document).ready( function() {
     }
     function increaseIncompleted() {
         $info[0]++;
+        addToLocalStorage($statusKey, $info);
     }
     function decreaseIncompleted() {
         $info[0]--;
+        addToLocalStorage($statusKey, $info);
     }
     function increaseCompleted() {
         $info[1]++;
+        addToLocalStorage($statusKey, $info);
     }
     function decreaseCompleted() {
         $info[1]--;
+        addToLocalStorage($statusKey, $info);
     }
     function increaseDeleted() {
         $info[2]++;
+        addToLocalStorage($statusKey, $info);
     }
 
     function getId() {
         return Math.floor((Math.random() * 100000) + 1);
     }
 
-    function addToLocalStorage(list) {
-        localStorage.setItem('LIST', JSON.stringify(list));
+    function addToLocalStorage(key, data) {
+        localStorage.setItem(key, JSON.stringify(data));
     }
-    function getFromLocalStorage() {
-        return JSON.parse(localStorage.getItem('LIST'));
+    function getFromLocalStorage(key) {
+        return JSON.parse(localStorage.getItem(key));
     }
 
     function updateLocalStorage(val, id, act) {
-        var data = getFromLocalStorage();
+        var data = getFromLocalStorage($listKey);
         switch (act) {
             case 'add':
                 var item = {text: val, id: id, status: 'new'};
-                if (localStorage.length !== 0) {
+                if (getFromLocalStorage($listKey)) {
                     data.push(item);
-                    addToLocalStorage(data);
+                    addToLocalStorage($listKey, data);
                 } else {
-                    addToLocalStorage([item]);
+                    addToLocalStorage($listKey, [item]);
                 }
                 break;
             case 'edit':
@@ -136,15 +143,33 @@ $(document).ready( function() {
                         item.status = item.status === 'new' ? 'done' : 'new';
                     };
                 });
-                addToLocalStorage(data);
+                addToLocalStorage($listKey, data);
                 break;
             case 'delete':
                 var index = data.findIndex(function(item) {return item.id === id});
                 data.splice(index, 1)
-                addToLocalStorage(data);
+                addToLocalStorage($listKey, data);
                 break;
             default:
                 return true;
         }
+    }
+
+    function makeList () {
+        var data = getFromLocalStorage($listKey);
+        if (!data) {
+            return true;
+        }
+        data.forEach(function(item) {
+            var $status = item.status === 'new' ? 'Unfinished' : 'Finished';
+            var $buttonClass = item.status === 'new' ? 'bg-warning' : 'bg-success';
+            var $buttonAct = item.status === 'new' ? 'Finish' : 'Start again';
+            $('.list').append('<div class="row" data-id=' + item.id + '>' +
+            '<div class="col-xs-3">'+ item.text + '</div>' +
+            '<div class="status '+ $buttonClass +' col-xs-3">'+ $status +'</div>' +
+            '<div class="col-xs-3 act done"><a>'+ $buttonAct +'</a></div>' +
+            '<div class="col-xs-3 act delete"><a>Delete</a></div>' +
+            '</div>');
+        })
     }
 });
